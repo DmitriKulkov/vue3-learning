@@ -1,8 +1,11 @@
 <template>
   <div class="post">
-    <div>
+    <div class="post__description">
       <div><strong>Title: </strong>{{ post.title }}</div>
       <div><strong>Descrption: </strong>{{ post.body }}</div>
+    </div>
+    <div>
+      <my-button>Delete</my-button>
     </div>
   </div>
 </template>
@@ -22,11 +25,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "./common/common";
+@import "./common/border";
 
 .post {
   padding: 15px;
   margin-top: 15px;
-  @include border(2px);
+  display: flex;
+  justify-content: space-between;
+  @include border(3px);
+}
+
+.post__description {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 </style>

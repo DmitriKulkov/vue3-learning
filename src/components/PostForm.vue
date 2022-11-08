@@ -1,31 +1,24 @@
 <template>
-  <form @submit.prevent>
+  <form @submit.prevent class="form">
     <h4>Create post</h4>
-    <input
-      v-model="post.title"
-      type="text"
-      class="input"
-      placeholder="Post title"
-    />
-    <input
-      v-model="post.body"
-      type="text"
-      class="input"
-      placeholder="Post description"
-    />
-    <button class="btn" @click="createPost">Create</button>
+    <my-input v-model="post.title" type="text" placeholder="Post title" />
+    <my-input v-model="post.body" type="text" placeholder="Post description" />
+    <my-button class="btn" style="align-self: flex-end" @click="createPost"
+      >Create</my-button
+    >
   </form>
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   data() {
     return {
       post: { id: 0, title: "", body: "" },
     };
   },
   methods: {
-    createPost() {
+    createPost(): void {
       this.post.id = Date.now();
       this.$emit("create", this.post);
       this.post = {
@@ -35,32 +28,15 @@ export default {
       };
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
-@import "./common/common";
-
-%form-element {
-  padding: 10px 15px;
-  margin-top: 15px;
-  @include border(1px);
-}
-
-.input {
-  @extend %form-element;
-  width: 100%;
-}
+@import "./common/form-element";
 
 .form {
   display: flex;
   flex-direction: column;
-}
-
-.btn {
-  @extend %form-element;
-  align-self: flex-end;
-  background: none;
-  color: $main-color;
+  gap: 15px;
 }
 </style>

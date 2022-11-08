@@ -1,0 +1,6 @@
+@import "./border";
+
+%form-element {
+  padding: 10px 15px;
+  @include border(1px);
+}

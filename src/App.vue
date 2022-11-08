@@ -8,8 +8,9 @@
 <script lang="ts">
 import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
+import { defineComponent } from "vue";
 import { Post } from "@/typings";
-export default {
+export default defineComponent({
   components: {
     PostForm,
     PostList,
@@ -27,11 +28,11 @@ export default {
     };
   },
   methods: {
-    createPost(post: Post) {
+    createPost(post: Post): void {
       this.posts.push(post);
     },
   },
-};
+});
 </script>
 
 <style lang="scss">
