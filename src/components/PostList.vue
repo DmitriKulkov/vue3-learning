@@ -15,7 +15,9 @@
 import { Post } from "@/typings";
 import { PropType } from "vue";
 import PostItem from "./PostItem.vue";
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   components: {
     PostItem,
   },
@@ -25,7 +27,7 @@ export default {
       required: true,
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped></style>

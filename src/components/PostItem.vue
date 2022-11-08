@@ -13,15 +13,16 @@
 <script lang="ts">
 import { PropType } from "vue";
 import { Post } from "@/typings";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   props: {
     post: {
       type: Object as PropType<Post>,
       required: true,
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
