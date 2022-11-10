@@ -12,9 +12,10 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
+import axios from "axios";
 import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
-import { defineComponent } from "vue";
 import { Post } from "@/typings";
 export default defineComponent({
   components: {
@@ -23,12 +24,7 @@ export default defineComponent({
   },
   data() {
     return {
-      posts: [
-        { id: 1, title: "JS post", body: "Post description" },
-        { id: 2, title: "JS post 2", body: "Post description 2" },
-        { id: 3, title: "JS post 3", body: "Post description 3" },
-        { id: 4, title: "JS post 4", body: "Post description 4" },
-      ] as Post[],
+      posts: [] as Post[],
       title: "",
       body: "",
       dialogVisible: false,
@@ -44,6 +40,20 @@ export default defineComponent({
     showDialog() {
       this.dialogVisible = true;
     },
+    async fetchPosts() {
+      try {
+        const response = await axios.get(
+          "https://jsonplaceholder.typicode.com/posts?_limit=10"
+        );
+        this.posts = response.data;
+        console.log(response);
+      } catch (e) {
+        alert(e);
+      }
+    },
+  },
+  mounted() {
+    this.fetchPosts();
   },
 });
 </script>
