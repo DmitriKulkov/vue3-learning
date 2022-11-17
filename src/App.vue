@@ -13,11 +13,19 @@
       <post-form @create="createPost" />
     </my-dialog>
     <post-list
-      v-if="!isPostsLoading"
+      v-if="!isPostsLoading || page > 1"
       :posts="sortedAndSearchedPosts"
       @remove="removePost"
     />
     <div v-else>Loading...</div>
+    <h2 v-if="!isPostsLoading && posts.length === 0" style="color: red">
+      Posts not fount
+    </h2>
+    <div
+      v-show="!isPostsLoading && posts.length > 0"
+      ref="observer"
+      class="observer"
+    ></div>
   </div>
 </template>
 
@@ -49,6 +57,9 @@ export default defineComponent({
       isPostsLoading: true,
       selectedSort: SortType.id,
       searchQuery: "",
+      page: 1,
+      limit: 10,
+      totalPages: 0,
       sortOptions: [
         { value: SortType.id, name: "By id" },
         { value: SortType.title, name: "By title" },
@@ -71,9 +82,22 @@ export default defineComponent({
       try {
         this.isPostsLoading = true;
         const response = await axios.get(
-          "https://jsonplaceholder.typicode.com/posts?_limit=10"
+          "https://jsonplaceholder.typicode.com/posts",
+          {
+            params: {
+              _page: this.page,
+              _limit: this.limit,
+            },
+          }
         );
-        this.posts = response.data;
+        this.totalPages = Math.ceil(
+          (response.headers["x-total-count"]
+            ? parseInt(response.headers["x-total-count"])
+            : 0) / this.limit
+        );
+        this.page === 0
+          ? (this.posts = response.data)
+          : (this.posts = [...this.posts, ...response.data]);
       } catch (e) {
         alert(e);
       } finally {
@@ -83,21 +107,39 @@ export default defineComponent({
   },
   mounted() {
     this.fetchPosts();
+    const options = {
+      rootMargin: "0px",
+      threshold: 1.0,
+    };
+    const callback = (
+      entries: IntersectionObserverEntry[],
+      observer: IntersectionObserver
+    ): void => {
+      if (entries[0].isIntersecting && this.page < this.totalPages) {
+        this.page++;
+        console.log(this.page);
+      }
+    };
+    const observer = new IntersectionObserver(callback, options);
+    observer.observe(this.$refs.observer as Element);
   },
   computed: {
     sortedPosts(): Post[] {
       return [...this.posts].sort((post1, post2) =>
         this.selectedSort !== "id"
           ? post1[this.selectedSort].localeCompare(post2[this.selectedSort])
-          : post1[this.selectedSort] < post2[this.selectedSort]
-          ? post1[this.selectedSort]
-          : post2[this.selectedSort]
+          : post1[this.selectedSort] - post2[this.selectedSort]
       );
     },
     sortedAndSearchedPosts(): Post[] {
       return this.sortedPosts.filter((post) =>
         post.title.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
+    },
+  },
+  watch: {
+    page: function () {
+      this.fetchPosts();
     },
   },
 });

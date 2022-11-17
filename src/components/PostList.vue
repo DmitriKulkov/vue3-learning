@@ -1,5 +1,5 @@
 <template>
-  <div v-if="posts.length > 0">
+  <div>
     <h3>Post List:</h3>
     <transition-group name="post-list">
       <post-item
@@ -10,7 +10,6 @@
       />
     </transition-group>
   </div>
-  <h2 v-else style="color: red">Posts not fount</h2>
 </template>
 
 <script lang="ts">
