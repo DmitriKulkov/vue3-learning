@@ -12,7 +12,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 export default defineComponent({
-  data() {
+  name: "post-form",
+  data: () => {
     return {
       post: { id: 0, title: "", body: "" },
     };

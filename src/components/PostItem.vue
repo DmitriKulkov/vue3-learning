@@ -4,9 +4,7 @@
       <div><strong>Title: </strong>{{ post.title }}</div>
       <div><strong>Descrption: </strong>{{ post.body }}</div>
     </div>
-    <div>
-      <my-button @click="$emit('remove', post)">Delete</my-button>
-    </div>
+    <my-button @click="$emit('remove', post)">Delete</my-button>
   </div>
 </template>
 
@@ -16,6 +14,7 @@ import { Post } from "@/typings";
 import { defineComponent } from "vue";
 
 export default defineComponent({
+  name: "post-item",
   props: {
     post: {
       type: Object as PropType<Post>,
@@ -33,6 +32,7 @@ export default defineComponent({
   margin-top: 15px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   @include border(3px);
 }
 

@@ -1,5 +1,5 @@
-$main-color: teal;
+@import "./color-theme";
 
 @mixin border($width) {
-  border: $width solid $main-color;
+  border: $width solid $primary-color;
 }

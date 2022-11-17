@@ -4,7 +4,7 @@
   </button>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -17,7 +17,7 @@ export default defineComponent({
 .my_btn {
   @extend %form-element;
   background: none;
-  color: $main-color;
+  color: $primary-color;
   height: 40px;
   width: 120px;
 }

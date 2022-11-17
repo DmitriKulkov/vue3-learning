@@ -1,13 +1,21 @@
 <template>
   <div class="app">
     <h1>Posts page</h1>
-    <my-button @click="showDialog" style="margin: 15px 0"
-      >Create post</my-button
-    >
+    <div class="app__btns">
+      <my-button @click="showDialog">Create post</my-button>
+      <div class="sort">
+        <p>Sort posts:</p>
+        <my-select v-model="selectedSort" :options="sortOptions" />
+      </div>
+    </div>
     <my-dialog v-model:show="dialogVisible">
       <post-form @create="createPost" />
     </my-dialog>
-    <post-list v-if="!isPostsLoading" :posts="posts" @remove="removePost" />
+    <post-list
+      v-if="!isPostsLoading"
+      :posts="sortedPosts"
+      @remove="removePost"
+    />
     <div v-else>Loading...</div>
   </div>
 </template>
@@ -18,31 +26,46 @@ import axios from "axios";
 import PostForm from "@/components/PostForm.vue";
 import PostList from "@/components/PostList.vue";
 import { Post } from "@/typings";
+
+enum SortType {
+  title = "title",
+  body = "body",
+  id = "id",
+}
+
 export default defineComponent({
+  name: "app",
   components: {
     PostForm,
     PostList,
   },
-  data() {
+  data: () => {
     return {
       posts: [] as Post[],
       title: "",
       body: "",
       dialogVisible: false,
       isPostsLoading: true,
+      selectedSort: SortType.id,
+      sortOptions: [
+        { value: SortType.id, name: "By id" },
+        { value: SortType.title, name: "By title" },
+        { value: SortType.body, name: "By body" },
+      ],
     };
   },
   methods: {
     createPost(post: Post): void {
       this.posts.push(post);
+      this.dialogVisible = false;
     },
     removePost(post: Post): void {
       this.posts = this.posts.filter((p) => p.id !== post.id);
     },
-    showDialog() {
+    showDialog(): void {
       this.dialogVisible = true;
     },
-    async fetchPosts() {
+    async fetchPosts(): Promise<void> {
       try {
         this.isPostsLoading = true;
         const response = await axios.get(
@@ -59,6 +82,17 @@ export default defineComponent({
   mounted() {
     this.fetchPosts();
   },
+  computed: {
+    sortedPosts(): Post[] {
+      return [...this.posts].sort((post1, post2) =>
+        this.selectedSort !== "id"
+          ? post1[this.selectedSort].localeCompare(post2[this.selectedSort])
+          : post1[this.selectedSort] < post2[this.selectedSort]
+          ? post1[this.selectedSort]
+          : post2[this.selectedSort]
+      );
+    },
+  },
 });
 </script>
 
@@ -71,5 +105,18 @@ export default defineComponent({
 
 .app {
   padding: 20px;
+}
+
+.app__btns {
+  margin: 15px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sort {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
 }
 </style>
